@@ -1,5 +1,12 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/32B92nwd)
+# Team Ghidra
+Lab Section: 1
 
-# Team Ghidra Project Bid
+Team Number: 4
 
-This repository contains the Project Bid_1119879356.pdf
+Team Members:
+Allen Chang     achang3@ewu.edu
+Carrie Sargent  csargent3@ewu.edu
+Earl Quinto     equinto@ewu.edu
+Ethan Crawford  ecrawford4@ewu.edu
+William Kern    wkern1@ewu.edu
+
