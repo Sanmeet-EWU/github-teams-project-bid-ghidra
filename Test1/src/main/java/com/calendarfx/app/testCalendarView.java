@@ -106,9 +106,12 @@ public class testCalendarView extends Application {
                 for (Entry<?> entry : entries) {
                     writer.println("  Entry:");
                     writer.println("    Title:" + entry.getTitle());
-                    //writer.println("    Description:" + entry.getDescription());
-                    writer.println("    Start:" + entry.getStartDate());
-                    writer.println("    End:" + entry.getEndDate());
+                    writer.println("    Location:"+entry.getLocation());
+                    writer.println("    StartDate:" + entry.getStartDate());
+                    writer.println("    EndDate:" + entry.getEndDate());
+                    writer.println("    StartTime:"+entry.getStartTime().toString());
+                    writer.println("    EndTime:"+entry.getEndTime().toString());
+
                     // Add more entry details as needed
                 }
             }
@@ -131,16 +134,24 @@ public class testCalendarView extends Application {
                     calendarSource.getCalendars().add(currentCalendar);
                 } else if (line.trim().startsWith("Entry:")) {
                     String title = reader.readLine().trim().substring("Title:".length());
-                    String startDateStr = reader.readLine().trim().substring("Start:".length());
-                    LocalDate start=LocalDate.parse(startDateStr);
-                    String endDateStr = reader.readLine().trim().substring("End:".length());
-                    LocalDate end=LocalDate.parse(endDateStr);
-                    
-                    // Create the entry and add it to the current calendar
+                    String location=reader.readLine().trim().substring("Location:".length());
+                    String startDateStr = reader.readLine().trim().substring("StartDate:".length());
+                    LocalDate startDate=LocalDate.parse(startDateStr);
+                    String endDateStr = reader.readLine().trim().substring("EndDate:".length());
+                    LocalDate endDate=LocalDate.parse(endDateStr);
+                    //localTime 
+                    String startTimeStr=reader.readLine().trim().substring("StartTime:".length());
+                    LocalTime startTime=LocalTime.parse(startTimeStr);
+                    String endTimeStr=reader.readLine().trim().substring("EndTime:".length());
+                    LocalTime endTime=LocalTime.parse(endTimeStr);
+                    //set date
                     Entry<?> entry = new Entry<>(title);
-                    entry.changeStartDate(start);
-                    entry.changeEndDate(end);
-                    
+                    entry.setLocation(location);
+                    entry.changeStartDate(startDate);
+                    entry.changeEndDate(endDate);
+                    //set time
+                    entry.changeStartTime(startTime);
+                    entry.changeEndTime(endTime);
                     // Add more entry details as needed
                     if (currentCalendar != null) {
                         currentCalendar.addEntry(entry);
