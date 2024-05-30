@@ -23,24 +23,26 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
 public class testCalendarView extends Application {
-	//static variables
-	public static final String SaveFileName="calendarSourceData.txt";
-	public static CalendarView calendarView;
-	public static CalendarSource calendarSource;
-	public CalendarEvent event;
-	//
-	
-	
-	
-	
-	
-	public void start(Stage primaryStage) {
-		
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    //static variables
+    public static final String SaveFileName="calendarSourceData.txt";
+    public static CalendarView calendarView;
+    public static CalendarSource calendarSource;
+    public CalendarEvent event;
+    //
+
+
+
+
+
+    public void start(Stage primaryStage) {
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         // Schedule the task to run every minute
         scheduler.scheduleAtFixedRate(new Runnable() {
@@ -50,11 +52,11 @@ public class testCalendarView extends Application {
                 saveCalendarSource(calendarSource, SaveFileName);
             }
         }, 0, 10, TimeUnit.SECONDS);
-        
-		//StackPane holds the ui elements
-		StackPane stackPane=new StackPane();
+
+        //StackPane holds the ui elements
+        StackPane stackPane=new StackPane();
         stackPane.getChildren().addAll(calendarView); // introPane);
-		//thread updates the time for the calendar
+        //thread updates the time for the calendar
         Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
             @Override
             public void run() {
@@ -86,17 +88,45 @@ public class testCalendarView extends Application {
         scene.focusOwnerProperty().addListener(it -> System.out.println("focus owner: " + scene.getFocusOwner()));
         CSSFX.start(scene);
         //set the details for the window
-		primaryStage.setTitle("Calendar");
+        primaryStage.setTitle("Calendar");
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.setWidth(1300);
         primaryStage.setHeight(1000);
         primaryStage.centerOnScreen();
         primaryStage.show();
-        
-	}
-	
-	// Save CalendarSource to file
+
+        List<CalendarSource> sources=calendarView.getCalendarSources();
+        for(CalendarSource source:sources) {
+            List<Calendar> calendars=source.getCalendars();
+            for(Calendar calendar:calendars) {
+                List<Entry> entries=calendar.findEntries("");
+                for(Entry entry:entries) {
+                    LocalDate entrydate=entry.getStartDate();
+                    if(LocalDate.now().isEqual(entrydate)) {
+                        openSecondWindow();
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void openSecondWindow() {
+        Stage settingsStage = new Stage();
+        settingsStage.initModality(Modality.APPLICATION_MODAL);
+        settingsStage.setTitle("Window");
+
+        VBox root = new VBox();
+        root.setSpacing(10);
+
+        Scene scene = new Scene(root, 250, 150);
+        settingsStage.setScene(scene);
+        settingsStage.show();
+
+    }
+
+    // Save CalendarSource to file
     public static void saveCalendarSource(CalendarSource calendarSource, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             List<Calendar> calendars = calendarSource.getCalendars();
@@ -139,7 +169,7 @@ public class testCalendarView extends Application {
                     LocalDate startDate=LocalDate.parse(startDateStr);
                     String endDateStr = reader.readLine().trim().substring("EndDate:".length());
                     LocalDate endDate=LocalDate.parse(endDateStr);
-                    //localTime 
+                    //localTime
                     String startTimeStr=reader.readLine().trim().substring("StartTime:".length());
                     LocalTime startTime=LocalTime.parse(startTimeStr);
                     String endTimeStr=reader.readLine().trim().substring("EndTime:".length());
@@ -165,32 +195,32 @@ public class testCalendarView extends Application {
         }
         return calendarSource;
     }
-	 
-	//sets the data for calendarView with the source
-	public static CalendarView createCalendarView(CalendarSource source) {
-		CalendarView calendarView=new CalendarView();
-		calendarView.getCalendarSources().setAll(source);
-		return calendarView;
-	}
-	
-	
-    
 
-	
-	public static void main(String[] args) {
+    //sets the data for calendarView with the source
+    public static CalendarView createCalendarView(CalendarSource source) {
+        CalendarView calendarView=new CalendarView();
+        calendarView.getCalendarSources().setAll(source);
+        return calendarView;
+    }
+
+
+
+
+
+    public static void main(String[] args) {
         calendarSource=loadCalendarSource(SaveFileName);
         if(calendarSource==null) {
-        	System.out.print("no Calendar Source data");
-        	Calendar test=new Calendar("test");
-        	calendarSource= new CalendarSource();
-        	calendarSource.getCalendars().add(test);
-        	saveCalendarSource(calendarSource,SaveFileName);
+            System.out.print("no Calendar Source data");
+            Calendar test=new Calendar("test");
+            calendarSource= new CalendarSource();
+            calendarSource.getCalendars().add(test);
+            saveCalendarSource(calendarSource,SaveFileName);
         }
-		calendarView=createCalendarView(calendarSource);
-		
-		
-		launch(args);
+        calendarView=createCalendarView(calendarSource);
+
+
+        launch(args);
     }
-	
-	
+
+
 }
