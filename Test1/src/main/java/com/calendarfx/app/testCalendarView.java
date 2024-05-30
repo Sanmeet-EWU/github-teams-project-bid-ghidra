@@ -13,8 +13,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
 import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.view.CalendarView;
+import com.calendarfx.view.DateControl;
 
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
@@ -26,7 +28,7 @@ import javafx.stage.Stage;
 
 public class testCalendarView extends Application {
 	//static variables
-	public static final String SaveFileName="calendarSourceData";
+	public static final String SaveFileName="calendarSourceData.txt";
 	public static CalendarView calendarView;
 	public static CalendarSource calendarSource;
 	public CalendarEvent event;
@@ -45,7 +47,7 @@ public class testCalendarView extends Application {
             @Override
             public void run() {
                 // Call your method here
-                saveCalendarSource(calendarSource, "SaveFileName");
+                saveCalendarSource(calendarSource, SaveFileName);
             }
         }, 0, 10, TimeUnit.SECONDS);
         
@@ -91,16 +93,24 @@ public class testCalendarView extends Application {
         primaryStage.setHeight(1000);
         primaryStage.centerOnScreen();
         primaryStage.show();
+        
 	}
 	
 	// Save CalendarSource to file
     public static void saveCalendarSource(CalendarSource calendarSource, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             List<Calendar> calendars = calendarSource.getCalendars();
-            for (Calendar calendar : calendars) {
+            for (Calendar<?> calendar : calendars) {
                 writer.println("Calendar:" + calendar.getName());
-                // Add more information if needed
-                // For example, you might need to save calendar events here
+                List<Entry<?>> entries=calendar.findEntries("");
+                for (Entry<?> entry : entries) {
+                    writer.println("  Entry:");
+                    writer.println("    Title:" + entry.getTitle());
+                    //writer.println("    Description:" + entry.getDescription());
+                    writer.println("    Start:" + entry.getStartDate());
+                    writer.println("    End:" + entry.getEndDate());
+                    // Add more entry details as needed
+                }
             }
             System.out.println("Calendar source data saved successfully.");
         } catch (IOException e) {
@@ -113,12 +123,28 @@ public class testCalendarView extends Application {
         CalendarSource calendarSource = new CalendarSource();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
+            Calendar<?> currentCalendar = null;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("Calendar:")) {
                     String calendarName = line.substring("Calendar:".length());
-                    Calendar calendar = new Calendar(calendarName);
-                    // Add more code to read additional information if needed
-                    calendarSource.getCalendars().add(calendar);
+                    currentCalendar = new Calendar(calendarName);
+                    calendarSource.getCalendars().add(currentCalendar);
+                } else if (line.trim().startsWith("Entry:")) {
+                    String title = reader.readLine().trim().substring("Title:".length());
+                    String startDateStr = reader.readLine().trim().substring("Start:".length());
+                    LocalDate start=LocalDate.parse(startDateStr);
+                    String endDateStr = reader.readLine().trim().substring("End:".length());
+                    LocalDate end=LocalDate.parse(endDateStr);
+                    
+                    // Create the entry and add it to the current calendar
+                    Entry<?> entry = new Entry<>(title);
+                    entry.changeStartDate(start);
+                    entry.changeEndDate(end);
+                    
+                    // Add more entry details as needed
+                    if (currentCalendar != null) {
+                        currentCalendar.addEntry(entry);
+                    }
                 }
             }
             System.out.println("Calendar source data loaded successfully.");
