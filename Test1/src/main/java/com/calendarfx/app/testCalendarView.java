@@ -8,9 +8,12 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.view.CalendarView;
 
 import fr.brouillard.oss.cssfx.CSSFX;
@@ -20,15 +23,32 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+
 public class testCalendarView extends Application {
 	//static variables
 	public static final String SaveFileName="calendarSourceData";
 	public static CalendarView calendarView;
 	public static CalendarSource calendarSource;
+	public CalendarEvent event;
 	//
 	
-	//creates the window that displays the calendar
+	
+	
+	
+	
 	public void start(Stage primaryStage) {
+		
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        // Schedule the task to run every minute
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                // Call your method here
+                saveCalendarSource(calendarSource, "SaveFileName");
+            }
+        }, 0, 10, TimeUnit.SECONDS);
+        
 		//StackPane holds the ui elements
 		StackPane stackPane=new StackPane();
         stackPane.getChildren().addAll(calendarView); // introPane);
@@ -117,9 +137,12 @@ public class testCalendarView extends Application {
 	}
 	
 	
+    
+
+	
 	public static void main(String[] args) {
         calendarSource=loadCalendarSource(SaveFileName);
-        if(calendarSource==null) {//if there is no save data existing
+        if(calendarSource==null) {
         	System.out.print("no Calendar Source data");
         	Calendar test=new Calendar("test");
         	calendarSource= new CalendarSource();
