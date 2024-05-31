@@ -11,19 +11,23 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
-import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.view.CalendarView;
-import com.calendarfx.view.DateControl;
 
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -104,7 +108,7 @@ public class testCalendarView extends Application {
                 for(Entry entry:entries) {
                     LocalDate entrydate=entry.getStartDate();
                     if(LocalDate.now().isEqual(entrydate)) {
-                        openSecondWindow();
+                        openSecondWindow(entry);
                     }
                 }
             }
@@ -112,18 +116,29 @@ public class testCalendarView extends Application {
 
     }
 
-    public void openSecondWindow() {
+    public void openSecondWindow(Entry<?> entry) {
         Stage settingsStage = new Stage();
         settingsStage.initModality(Modality.APPLICATION_MODAL);
-        settingsStage.setTitle("Window");
+        settingsStage.setTitle("Alert!: EVENT TODAY!");
 
         VBox root = new VBox();
         root.setSpacing(10);
+        root.setPadding(new Insets(15));
+        root.setAlignment(Pos.CENTER_LEFT);
 
-        Scene scene = new Scene(root, 250, 150);
+        Label titleLabel = new Label("Title: " + entry.getTitle());
+        titleLabel.setFont(new Font("Arial",20));
+        Label startDateLabel = new Label("Start Date: " + entry.getStartDate().toString());
+        Label endDateLabel = new Label("End Date: " + entry.getEndDate().toString());
+        Label startTimeLabel = new Label("Start Time: " + entry.getStartTime().toString());
+        Label endTimeLabel = new Label("End Time: " + entry.getEndTime().toString());
+        Label locationLabel = new Label("Location: " + entry.getLocation());
+
+        root.getChildren().addAll(titleLabel, startDateLabel, endDateLabel, startTimeLabel, endTimeLabel, locationLabel);
+
+        Scene scene = new Scene(root, 300, 250);
         settingsStage.setScene(scene);
         settingsStage.show();
-
     }
 
     // Save CalendarSource to file
