@@ -13,7 +13,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.calendarfx.model.Calendar;
-import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
@@ -21,9 +20,12 @@ import com.calendarfx.view.CalendarView;
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -42,12 +44,39 @@ public class testCalendarView extends Application {
     public void start(Stage primaryStage) {
     	
     	//save the calendar details every 10 seconds
-       saveUpdate(10);
+    	saveUpdate(10);
 
+        Button savebutton=new Button("SAVE");
+        Button loadButton=new Button("LOAD");
+
+        savebutton.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent eventt) {
+        		saveCalendarSource(calendarSource,SaveFileName);
+        	}
+        });
+        loadButton.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event) {
+        		saveCalendarSource(calendarSource,SaveFileName);
+        	}
+        });
+        
+        savebutton.setScaleX(0.9);
+        savebutton.setScaleY(0.9);
+        loadButton.setScaleX(0.9);
+        loadButton.setScaleY(0.9);
+    	
         //StackPane holds the ui elements
         StackPane stackPane=new StackPane();
         //give calendarView details to stackPane
-        stackPane.getChildren().addAll(calendarView); 
+        stackPane.getChildren().addAll(calendarView,savebutton,loadButton); 
+        
+        StackPane.setMargin(savebutton, new Insets(0, 890, 920, 0));
+        StackPane.setMargin(loadButton, new Insets(0, 790, 920, 0));
+
+        
+        
         
         //Update time every 10 seconds
         timeUpdate(10000);
