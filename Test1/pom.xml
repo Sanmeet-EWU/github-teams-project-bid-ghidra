@@ -29,16 +29,33 @@
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
+        <slf4j.version>2.0.7</slf4j.version>
+        <logback.version>1.4.7</logback.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.calendarfx</groupId>
             <artifactId>view</artifactId>
+            <version>11.12.7</version>
         </dependency>
         <dependency>
             <groupId>fr.brouillard.oss</groupId>
             <artifactId>cssfx</artifactId>
+            <version>11.5.0</version>
+        </dependency>
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- Logback Classic Module -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
     </dependencies>
 
@@ -51,6 +68,20 @@
                 <configuration>
                     <mainClass>com.calendarfx.app.CalendarApp</mainClass>
                 </configuration>
+            </plugin>
+            <!-- Adding directory-maven-plugin if needed -->
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>0.3.1</version>
+                <executions>
+                    <execution>
+                        <id>resolve-rootdir</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
