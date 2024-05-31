@@ -33,35 +33,58 @@ import javafx.stage.Stage;
 
 
 public class testCalendarView extends Application {
-    //static variables
+    //Start of GlobalVariables//
     public static final String SaveFileName="calendarSourceData.txt";
     public static CalendarView calendarView;
     public static CalendarSource calendarSource;
-    public CalendarEvent event;
-    //
-
-
-
-
+    //End of GlobalVariables//
 
     public void start(Stage primaryStage) {
-
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-        // Schedule the task to run every minute
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                // Call your method here
-                saveCalendarSource(calendarSource, SaveFileName);
-            }
-        }, 0, 10, TimeUnit.SECONDS);
+    	
+    	//save the calendar details every 10 seconds
+       saveUpdate(10);
 
         //StackPane holds the ui elements
         StackPane stackPane=new StackPane();
-        stackPane.getChildren().addAll(calendarView); // introPane);
-        //thread updates the time for the calendar
-        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+        //give calendarView details to stackPane
+        stackPane.getChildren().addAll(calendarView); 
+        
+        //Update time every 10 seconds
+        timeUpdate(10000);
+        //sets the page view to month
+        calendarView.showMonthPage();
+        
+        //create scene that holds the display
+        Scene scene=new Scene(stackPane);
+        //show what is being interacted with at the moment
+        scene.focusOwnerProperty().addListener(it -> System.out.println("focus owner: " + scene.getFocusOwner()));
+        CSSFX.start(scene);
+        
+        //set the details for the window
+        primaryStage.setTitle("Calendar");
+        primaryStage.setScene(scene);
+        primaryStage.sizeToScene();
+        primaryStage.setWidth(1300);
+        primaryStage.setHeight(1000);
+        primaryStage.centerOnScreen();
+        primaryStage.show();
+        
+        //alert if event is occuring today
+        List<Entry> entries=getEntries(calendarView);
+        for(Entry entry:entries) {
+        	LocalDate entryDate=entry.getStartDate();
+        	if(LocalDate.now().isEqual(entryDate))
+        		openAlertWindow(entry);
+        }
+    }
+    
+    //Start of Methods//    
+    /*
+     * timeUpdate creates and starts a thread that updates the time on the calendar
+     * for time milliseconds
+    */
+    public void timeUpdate(int time) {
+    	Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
             @Override
             public void run() {
                 while (true) {
@@ -72,7 +95,7 @@ public class testCalendarView extends Application {
 
                     try {
                         // update every 10 seconds
-                        sleep(10000);
+                        sleep(time);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -84,39 +107,29 @@ public class testCalendarView extends Application {
         updateTimeThread.setPriority(Thread.MIN_PRIORITY);
         updateTimeThread.setDaemon(true);
         updateTimeThread.start();
-        //sets the page view to month
-        calendarView.showMonthPage();
-        //create scene that holds the display
-        Scene scene=new Scene(stackPane);
-        //show what is being interacted with at the moment
-        scene.focusOwnerProperty().addListener(it -> System.out.println("focus owner: " + scene.getFocusOwner()));
-        CSSFX.start(scene);
-        //set the details for the window
-        primaryStage.setTitle("Calendar");
-        primaryStage.setScene(scene);
-        primaryStage.sizeToScene();
-        primaryStage.setWidth(1300);
-        primaryStage.setHeight(1000);
-        primaryStage.centerOnScreen();
-        primaryStage.show();
-
-        List<CalendarSource> sources=calendarView.getCalendarSources();
-        for(CalendarSource source:sources) {
-            List<Calendar> calendars=source.getCalendars();
-            for(Calendar calendar:calendars) {
-                List<Entry> entries=calendar.findEntries("");
-                for(Entry entry:entries) {
-                    LocalDate entrydate=entry.getStartDate();
-                    if(LocalDate.now().isEqual(entrydate)) {
-                        openSecondWindow(entry);
-                    }
-                }
-            }
-        }
-
     }
+    
+    /*
+     * saveUpdate saves the calendar details every time seconds
+     */
+    public void saveUpdate(int time) {
+    	 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public void openSecondWindow(Entry<?> entry) {
+         // Schedule the task to run every minute
+         scheduler.scheduleAtFixedRate(new Runnable() {
+             @Override
+             public void run() {
+                 // Call your method here
+                 saveCalendarSource(calendarSource, SaveFileName);
+             }
+         }, 0, time, TimeUnit.SECONDS);
+    }
+    
+    /*
+     * openAlertWindow creates a new window that takes entry and places the entry 
+     * details into the window.
+     */
+    public void openAlertWindow(Entry<?> entry) {
         Stage settingsStage = new Stage();
         settingsStage.initModality(Modality.APPLICATION_MODAL);
         settingsStage.setTitle("Alert!: EVENT TODAY!");
@@ -141,7 +154,10 @@ public class testCalendarView extends Application {
         settingsStage.show();
     }
 
-    // Save CalendarSource to file
+    /*
+     * saveCalendarSouce takes a CalendarSource source and a String file name and saves the 
+     * calendar details in the source into the file name given.
+     */
     public static void saveCalendarSource(CalendarSource calendarSource, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             List<Calendar> calendars = calendarSource.getCalendars();
@@ -166,7 +182,10 @@ public class testCalendarView extends Application {
         }
     }
 
-    // Load CalendarSource from file
+    /*
+     * loadCalendarSource takes a String fileName and reads the details in the save file and
+     * creates a calendarSource class containing the calendars and events in the file
+     */
     public static CalendarSource loadCalendarSource(String fileName) {
         CalendarSource calendarSource = new CalendarSource();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -211,17 +230,47 @@ public class testCalendarView extends Application {
         return calendarSource;
     }
 
-    //sets the data for calendarView with the source
+    /*
+     * createCalendarView creates and sets a calendarView object with a calendarSource object
+     */
     public static CalendarView createCalendarView(CalendarSource source) {
         CalendarView calendarView=new CalendarView();
         calendarView.getCalendarSources().setAll(source);
         return calendarView;
     }
 
+    /*
+     * getEntries takes a CalendarView Object and returns all entries
+     */
+    public static List<Entry> getEntries(CalendarView view){
+    	List<Entry> entries=null;
+    	List<CalendarSource> sources=calendarView.getCalendarSources();
+        for(CalendarSource source:sources) {
+            List<Calendar> calendars=source.getCalendars();
+            for(Calendar calendar:calendars) {
+                entries=calendar.findEntries("");
+                //return entries;
+            }
+        }
+    	return entries;
+    }
+    
+    /*
+     * getEntries takes a CalendarSource object and returns all entries
+     */
+    public static List<Entry> getEntries(CalendarSource source){
+    	List<Entry> entries=null;
 
+    	List<Calendar> calendars=source.getCalendars();
+    	for(Calendar calendar:calendars) {
+    		entries=calendar.findEntries("");
+    		//return entries;
+    	}
+    	return entries;
+    }
+    //End of Methods//
 
-
-
+    
     public static void main(String[] args) {
         calendarSource=loadCalendarSource(SaveFileName);
         if(calendarSource==null) {
