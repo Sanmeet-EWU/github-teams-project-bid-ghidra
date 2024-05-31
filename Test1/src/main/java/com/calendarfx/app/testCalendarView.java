@@ -8,9 +8,6 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
@@ -44,7 +41,7 @@ public class testCalendarView extends Application {
     public void start(Stage primaryStage) {
     	
     	//save the calendar details every 10 seconds
-    	saveUpdate(10);
+    	saveUpdate(10000);
 
         Button savebutton=new Button("SAVE");
         Button loadButton=new Button("LOAD");
@@ -142,16 +139,28 @@ public class testCalendarView extends Application {
      * saveUpdate saves the calendar details every time seconds
      */
     public void saveUpdate(int time) {
-    	 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    	Thread saveUpdateThread = new Thread("Calendar: Save Update Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(() -> {
+                        saveCalendarSource(calendarSource,SaveFileName);
+                    });
 
-         // Schedule the task to run every minute
-         scheduler.scheduleAtFixedRate(new Runnable() {
-             @Override
-             public void run() {
-                 // Call your method here
-                 saveCalendarSource(calendarSource, SaveFileName);
-             }
-         }, 0, time, TimeUnit.SECONDS);
+                    try {
+                        // update every 10 seconds
+                        sleep(time);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        };
+        //starts the threads
+        saveUpdateThread.setPriority(Thread.MIN_PRIORITY);
+        saveUpdateThread.setDaemon(true);
+        saveUpdateThread.start();
     }
     
     /*
