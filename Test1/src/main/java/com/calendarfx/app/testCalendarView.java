@@ -1,12 +1,14 @@
 package com.calendarfx.app;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.calendarfx.model.Calendar;
@@ -27,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -42,35 +45,56 @@ public class testCalendarView extends Application {
     	
     	//save the calendar details every 10 seconds
     	saveUpdate(10000);
+    	
+    	//StackPane holds the ui elements
+        StackPane stackPane=new StackPane();
+        
+        //buttons for exporting and importing
+        Button saveButton=new Button("EXPORT");
+        Button loadButton=new Button("IMPORT");
 
-        Button savebutton=new Button("SAVE");
-        Button loadButton=new Button("LOAD");
-
-        savebutton.setOnAction(new EventHandler<ActionEvent>() {
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent eventt) {
-        		saveCalendarSource(calendarSource,SaveFileName);
+        		FileChooser fileChooser=new FileChooser();
+        		File file=fileChooser.showSaveDialog(primaryStage);
+        		if(file!=null)
+        			saveFile(calendarView,file);
+        		//saveCalendarView(calendarView,SaveFileName);
         	}
         });
         loadButton.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent event) {
-        		saveCalendarSource(calendarSource,SaveFileName);
-        	}
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Load Calendar View");
+                File file = fileChooser.showOpenDialog(primaryStage);
+                if (file != null) {
+                    calendarView = loadFile(file);
+                    if (calendarView != null) {
+                        stackPane.getChildren().clear(); // Clear existing content
+                        stackPane.getChildren().addAll(calendarView, saveButton, loadButton); // Add loaded calendar
+                        calendarView.showMonthPage();
+                    }
+                }
+            }
         });
         
-        savebutton.setScaleX(0.9);
-        savebutton.setScaleY(0.9);
+        saveButton.setScaleX(0.9);
+        saveButton.setScaleY(0.9);
         loadButton.setScaleX(0.9);
         loadButton.setScaleY(0.9);
     	
-        //StackPane holds the ui elements
-        StackPane stackPane=new StackPane();
-        //give calendarView details to stackPane
-        stackPane.getChildren().addAll(calendarView,savebutton,loadButton); 
         
-        StackPane.setMargin(savebutton, new Insets(0, 890, 920, 0));
-        StackPane.setMargin(loadButton, new Insets(0, 790, 920, 0));
+        
+        
+        //give calendarView details to stackPane
+        stackPane.getChildren().addAll(calendarView,saveButton,loadButton); 
+        
+        StackPane.setAlignment(saveButton, Pos.TOP_RIGHT);
+        StackPane.setAlignment(loadButton, Pos.TOP_RIGHT);
+        StackPane.setMargin(saveButton, new Insets(10, 275, 0, 0));
+        StackPane.setMargin(loadButton, new Insets(10, 215, 0, 0));
 
         
         
@@ -89,14 +113,14 @@ public class testCalendarView extends Application {
         //set the details for the window
         primaryStage.setTitle("Calendar");
         primaryStage.setScene(scene);
-        primaryStage.sizeToScene();
+        //primaryStage.sizeToScene();
         primaryStage.setWidth(1300);
         primaryStage.setHeight(1000);
         primaryStage.centerOnScreen();
         primaryStage.show();
         
         //alert if event is occuring today
-        List<Entry> entries=getEntries(calendarView);
+        List<Entry<?>> entries=getEntries(calendarView);
         for(Entry entry:entries) {
         	LocalDate entryDate=entry.getStartDate();
         	if(LocalDate.now().isEqual(entryDate))
@@ -191,7 +215,153 @@ public class testCalendarView extends Application {
         settingsStage.setScene(scene);
         settingsStage.show();
     }
+    
+    public static void saveFile(CalendarView calendarView, File file) {
+    	try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+            List<CalendarSource> calendarSources = calendarView.getCalendarSources();
+            for (CalendarSource calendarSource : calendarSources) {
+                List<Calendar> calendars = calendarSource.getCalendars();
+                for (Calendar<?> calendar : calendars) {
+                    writer.println("Calendar:" + calendar.getName());
+                    List<Entry<?>> entries = calendar.findEntries("");
+                    for (Entry<?> entry : entries) {
+                        writer.println("  Entry:");
+                        writer.println("    Title:" + entry.getTitle());
+                        writer.println("    Location:" + entry.getLocation());
+                        writer.println("    StartDate:" + entry.getStartDate());
+                        writer.println("    EndDate:" + entry.getEndDate());
+                        writer.println("    StartTime:" + entry.getStartTime().toString());
+                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    }
+                }
+            }
+            System.out.println("Calendar view data saved successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static CalendarView loadFile(File file) {
+    	CalendarSource calendarSource = new CalendarSource();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            Calendar<?> currentCalendar = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Calendar:")) {
+                    String calendarName = line.substring("Calendar:".length());
+                    currentCalendar = new Calendar(calendarName);
+                    calendarSource.getCalendars().add(currentCalendar);
+                } else if (line.trim().startsWith("Entry:")) {
+                    String title = reader.readLine().trim().substring("Title:".length());
+                    String location = reader.readLine().trim().substring("Location:".length());
+                    String startDateStr = reader.readLine().trim().substring("StartDate:".length());
+                    LocalDate startDate = LocalDate.parse(startDateStr);
+                    String endDateStr = reader.readLine().trim().substring("EndDate:".length());
+                    LocalDate endDate = LocalDate.parse(endDateStr);
+                    String startTimeStr = reader.readLine().trim().substring("StartTime:".length());
+                    LocalTime startTime = LocalTime.parse(startTimeStr);
+                    String endTimeStr = reader.readLine().trim().substring("EndTime:".length());
+                    LocalTime endTime = LocalTime.parse(endTimeStr);
 
+                    Entry<?> entry = new Entry<>(title);
+                    entry.setLocation(location);
+                    entry.changeStartDate(startDate);
+                    entry.changeEndDate(endDate);
+                    entry.changeStartTime(startTime);
+                    entry.changeEndTime(endTime);
+
+                    if (currentCalendar != null) {
+                        currentCalendar.addEntry(entry);
+                    }
+                }
+            }
+            System.out.println("Calendar view data loaded successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        CalendarView calendarView = new CalendarView();
+        calendarView.getCalendarSources().add(calendarSource);
+        return calendarView;
+    }
+    
+    
+    /*
+     * saveCalendarView takes a CalendarView view and a String file name and saves the
+     * calendar details in the view into the file name given.
+     */
+    public static void saveCalendarView(CalendarView calendarView, String fileName) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            List<CalendarSource> calendarSources = calendarView.getCalendarSources();
+            for (CalendarSource calendarSource : calendarSources) {
+                List<Calendar> calendars = calendarSource.getCalendars();
+                for (Calendar<?> calendar : calendars) {
+                    writer.println("Calendar:" + calendar.getName());
+                    List<Entry<?>> entries = calendar.findEntries("");
+                    for (Entry<?> entry : entries) {
+                        writer.println("  Entry:");
+                        writer.println("    Title:" + entry.getTitle());
+                        writer.println("    Location:" + entry.getLocation());
+                        writer.println("    StartDate:" + entry.getStartDate());
+                        writer.println("    EndDate:" + entry.getEndDate());
+                        writer.println("    StartTime:" + entry.getStartTime().toString());
+                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    }
+                }
+            }
+            System.out.println("Calendar view data saved successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * loadCalendarView takes a String file name and reads the details in the save file and
+     * creates a CalendarView object containing the calendars and events in the file.
+     */
+    public static CalendarView loadCalendarView(String fileName) {
+        CalendarSource calendarSource = new CalendarSource();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            Calendar<?> currentCalendar = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Calendar:")) {
+                    String calendarName = line.substring("Calendar:".length());
+                    currentCalendar = new Calendar(calendarName);
+                    calendarSource.getCalendars().add(currentCalendar);
+                } else if (line.trim().startsWith("Entry:")) {
+                    String title = reader.readLine().trim().substring("Title:".length());
+                    String location = reader.readLine().trim().substring("Location:".length());
+                    String startDateStr = reader.readLine().trim().substring("StartDate:".length());
+                    LocalDate startDate = LocalDate.parse(startDateStr);
+                    String endDateStr = reader.readLine().trim().substring("EndDate:".length());
+                    LocalDate endDate = LocalDate.parse(endDateStr);
+                    String startTimeStr = reader.readLine().trim().substring("StartTime:".length());
+                    LocalTime startTime = LocalTime.parse(startTimeStr);
+                    String endTimeStr = reader.readLine().trim().substring("EndTime:".length());
+                    LocalTime endTime = LocalTime.parse(endTimeStr);
+
+                    Entry<?> entry = new Entry<>(title);
+                    entry.setLocation(location);
+                    entry.changeStartDate(startDate);
+                    entry.changeEndDate(endDate);
+                    entry.changeStartTime(startTime);
+                    entry.changeEndTime(endTime);
+
+                    if (currentCalendar != null) {
+                        currentCalendar.addEntry(entry);
+                    }
+                }
+            }
+            System.out.println("Calendar view data loaded successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        CalendarView calendarView = new CalendarView();
+        calendarView.getCalendarSources().add(calendarSource);
+        return calendarView;
+    }
+    
     /*
      * saveCalendarSouce takes a CalendarSource source and a String file name and saves the 
      * calendar details in the source into the file name given.
@@ -280,33 +450,32 @@ public class testCalendarView extends Application {
     /*
      * getEntries takes a CalendarView Object and returns all entries
      */
-    public static List<Entry> getEntries(CalendarView view){
-    	List<Entry> entries=null;
-    	List<CalendarSource> sources=calendarView.getCalendarSources();
-        for(CalendarSource source:sources) {
-            List<Calendar> calendars=source.getCalendars();
-            for(Calendar calendar:calendars) {
-                entries=calendar.findEntries("");
-                //return entries;
+    public static List<Entry<?>> getEntries(CalendarView view) {
+        List<Entry<?>> allEntries = new ArrayList<>();
+        List<CalendarSource> sources = view.getCalendarSources();
+        for (CalendarSource source : sources) {
+            List<Calendar> calendars = source.getCalendars();
+            for (Calendar calendar : calendars) {
+                List<Entry<?>> entries = calendar.findEntries("");
+                allEntries.addAll(entries);
             }
         }
-    	return entries;
+        return allEntries;
     }
     
     /*
      * getEntries takes a CalendarSource object and returns all entries
      */
-    public static List<Entry> getEntries(CalendarSource source){
-    	List<Entry> entries=null;
-
-    	List<Calendar> calendars=source.getCalendars();
-    	for(Calendar calendar:calendars) {
-    		entries=calendar.findEntries("");
-    		//return entries;
-    	}
-    	return entries;
-    }
-    //End of Methods//
+	public static List<Entry<?>> getEntries(CalendarSource source) {
+	    List<Entry<?>> allEntries = new ArrayList<>();
+	    List<Calendar> calendars = source.getCalendars();
+	    for (Calendar calendar : calendars) {
+	        List<Entry<?>> entries = calendar.findEntries("");
+	        allEntries.addAll(entries);
+	    }
+	    return allEntries;
+	}    
+	//End of Methods//
 
     
     public static void main(String[] args) {
