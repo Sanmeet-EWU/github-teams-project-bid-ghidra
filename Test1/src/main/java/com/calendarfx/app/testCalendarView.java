@@ -371,7 +371,19 @@ public class testCalendarView extends Application {
             System.out.println("Calendar view data loaded successfully.");
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            System.out.println("No Calendar View Data Found:");
+    		Calendar test=new Calendar("test");
+    		System.out.println("Creating New Calendar:");
+            CalendarSource calendarSource= new CalendarSource();
+    		System.out.println("Creating New Calendar Source:");
+            calendarSource.getCalendars().add(test);
+    		System.out.println("Assigning Calendar into Source:");
+    		CalendarView calendarView=new CalendarView();
+    		calendarView.getCalendarSources().clear();
+            calendarView.getCalendarSources().setAll(calendarSource);
+    		System.out.println("Assigning Source into View:");
+    		System.out.println("New Calendar View Class Created:");
+            return calendarView;
         }
         calendarView = new CalendarView();
         calendarView.getCalendarSources().clear();
@@ -515,21 +527,7 @@ public class testCalendarView extends Application {
         }
         calendarView=createCalendarView(calendarSource);
 		*/
-    	calendarView=loadCalendarView(SaveFileName);
-    	if(calendarView==null) {
-    		System.out.println("No Calendar View Data Found:");
-    		Calendar test=new Calendar("test");
-    		System.out.println("Creating New Calendar:");
-            calendarSource= new CalendarSource();
-    		System.out.println("Creating New Calendar Source:");
-            calendarSource.getCalendars().add(test);
-    		System.out.println("Assigning Calendar into Source:");
-            calendarView.getCalendarSources().setAll(calendarSource);
-    		System.out.println("Assigning Source into View:");
-    		System.out.println("New Calendar View Class Created:");
-    		saveCalendarView(calendarView,SaveFileName);
-    	}
-    	
+    	calendarView=loadCalendarView(SaveFileName);    	
     	
 
         launch(args);
