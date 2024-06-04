@@ -168,7 +168,7 @@ public class testCalendarView extends Application {
             public void run() {
                 while (true) {
                     Platform.runLater(() -> {
-                        saveCalendarSource(calendarSource,SaveFileName);
+                        saveCalendarView(calendarView,SaveFileName);
                     });
 
                     try {
@@ -218,6 +218,7 @@ public class testCalendarView extends Application {
     
     public static void saveFile(CalendarView calendarView, File file) {
     	try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+        	String id=null;
             List<CalendarSource> calendarSources = calendarView.getCalendarSources();
             for (CalendarSource calendarSource : calendarSources) {
                 List<Calendar> calendars = calendarSource.getCalendars();
@@ -225,13 +226,17 @@ public class testCalendarView extends Application {
                     writer.println("Calendar:" + calendar.getName());
                     List<Entry<?>> entries = calendar.findEntries("");
                     for (Entry<?> entry : entries) {
-                        writer.println("  Entry:");
-                        writer.println("    Title:" + entry.getTitle());
-                        writer.println("    Location:" + entry.getLocation());
-                        writer.println("    StartDate:" + entry.getStartDate());
-                        writer.println("    EndDate:" + entry.getEndDate());
-                        writer.println("    StartTime:" + entry.getStartTime().toString());
-                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    	if(id==null||id!=entry.getId()) {
+	                        writer.println("  Entry:");
+	                        writer.println("    Title:" + entry.getTitle());
+	                        writer.println("    ID:"+entry.getId());
+	                        writer.println("    Location:" + entry.getLocation());
+	                        writer.println("    StartDate:" + entry.getStartDate());
+	                        writer.println("    EndDate:" + entry.getEndDate());
+	                        writer.println("    StartTime:" + entry.getStartTime().toString());
+	                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    	}
+                    	id=entry.getId();
                     }
                 }
             }
@@ -252,6 +257,7 @@ public class testCalendarView extends Application {
                     calendarSource.getCalendars().add(currentCalendar);
                 } else if (line.trim().startsWith("Entry:")) {
                     String title = reader.readLine().trim().substring("Title:".length());
+                    String id = reader.readLine().trim().substring("ID:".length());
                     String location = reader.readLine().trim().substring("Location:".length());
                     String startDateStr = reader.readLine().trim().substring("StartDate:".length());
                     LocalDate startDate = LocalDate.parse(startDateStr);
@@ -263,6 +269,8 @@ public class testCalendarView extends Application {
                     LocalTime endTime = LocalTime.parse(endTimeStr);
 
                     Entry<?> entry = new Entry<>(title);
+                    entry.setTitle(title);
+                    entry.setId(id);
                     entry.setLocation(location);
                     entry.changeStartDate(startDate);
                     entry.changeEndDate(endDate);
@@ -291,6 +299,7 @@ public class testCalendarView extends Application {
      */
     public static void saveCalendarView(CalendarView calendarView, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+        	String id=null;
             List<CalendarSource> calendarSources = calendarView.getCalendarSources();
             for (CalendarSource calendarSource : calendarSources) {
                 List<Calendar> calendars = calendarSource.getCalendars();
@@ -298,13 +307,17 @@ public class testCalendarView extends Application {
                     writer.println("Calendar:" + calendar.getName());
                     List<Entry<?>> entries = calendar.findEntries("");
                     for (Entry<?> entry : entries) {
-                        writer.println("  Entry:");
-                        writer.println("    Title:" + entry.getTitle());
-                        writer.println("    Location:" + entry.getLocation());
-                        writer.println("    StartDate:" + entry.getStartDate());
-                        writer.println("    EndDate:" + entry.getEndDate());
-                        writer.println("    StartTime:" + entry.getStartTime().toString());
-                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    	if(id==null||id!=entry.getId()) {
+	                        writer.println("  Entry:");
+	                        writer.println("    Title:" + entry.getTitle());
+	                        writer.println("    ID:"+entry.getId());
+	                        writer.println("    Location:" + entry.getLocation());
+	                        writer.println("    StartDate:" + entry.getStartDate());
+	                        writer.println("    EndDate:" + entry.getEndDate());
+	                        writer.println("    StartTime:" + entry.getStartTime().toString());
+	                        writer.println("    EndTime:" + entry.getEndTime().toString());
+                    	}
+                    	id=entry.getId();
                     }
                 }
             }
@@ -319,7 +332,7 @@ public class testCalendarView extends Application {
      * creates a CalendarView object containing the calendars and events in the file.
      */
     public static CalendarView loadCalendarView(String fileName) {
-        CalendarSource calendarSource = new CalendarSource();
+        calendarSource = new CalendarSource();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             Calendar<?> currentCalendar = null;
@@ -330,6 +343,7 @@ public class testCalendarView extends Application {
                     calendarSource.getCalendars().add(currentCalendar);
                 } else if (line.trim().startsWith("Entry:")) {
                     String title = reader.readLine().trim().substring("Title:".length());
+                    String id = reader.readLine().trim().substring("ID:".length());
                     String location = reader.readLine().trim().substring("Location:".length());
                     String startDateStr = reader.readLine().trim().substring("StartDate:".length());
                     LocalDate startDate = LocalDate.parse(startDateStr);
@@ -341,6 +355,8 @@ public class testCalendarView extends Application {
                     LocalTime endTime = LocalTime.parse(endTimeStr);
 
                     Entry<?> entry = new Entry<>(title);
+                    entry.setTitle(title);
+                    entry.setId(id);
                     entry.setLocation(location);
                     entry.changeStartDate(startDate);
                     entry.changeEndDate(endDate);
@@ -357,7 +373,8 @@ public class testCalendarView extends Application {
             e.printStackTrace();
             return null;
         }
-        CalendarView calendarView = new CalendarView();
+        calendarView = new CalendarView();
+        calendarView.getCalendarSources().clear();
         calendarView.getCalendarSources().add(calendarSource);
         return calendarView;
     }
@@ -368,18 +385,24 @@ public class testCalendarView extends Application {
      */
     public static void saveCalendarSource(CalendarSource calendarSource, String fileName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+        	String id=null;
             List<Calendar> calendars = calendarSource.getCalendars();
             for (Calendar<?> calendar : calendars) {
                 writer.println("Calendar:" + calendar.getName());
                 List<Entry<?>> entries=calendar.findEntries("");
                 for (Entry<?> entry : entries) {
-                    writer.println("  Entry:");
-                    writer.println("    Title:" + entry.getTitle());
-                    writer.println("    Location:"+entry.getLocation());
-                    writer.println("    StartDate:" + entry.getStartDate());
-                    writer.println("    EndDate:" + entry.getEndDate());
-                    writer.println("    StartTime:"+entry.getStartTime().toString());
-                    writer.println("    EndTime:"+entry.getEndTime().toString());
+                	if(id==null||id!=entry.getId()) {
+                		writer.println("  Entry:");
+                        writer.println("    Title:" + entry.getTitle());
+                        writer.println("    ID:"+entry.getId());
+                        writer.println("    Location:"+entry.getLocation());
+                        writer.println("    StartDate:" + entry.getStartDate());
+                        writer.println("    EndDate:" + entry.getEndDate());
+                        writer.println("    StartTime:"+entry.getStartTime().toString());
+                        writer.println("    EndTime:"+entry.getEndTime().toString());
+                	}
+                    
+                	id=entry.getId();
 
                     // Add more entry details as needed
                 }
@@ -406,6 +429,7 @@ public class testCalendarView extends Application {
                     calendarSource.getCalendars().add(currentCalendar);
                 } else if (line.trim().startsWith("Entry:")) {
                     String title = reader.readLine().trim().substring("Title:".length());
+                    String id = reader.readLine().trim().substring("ID:".length());
                     String location=reader.readLine().trim().substring("Location:".length());
                     String startDateStr = reader.readLine().trim().substring("StartDate:".length());
                     LocalDate startDate=LocalDate.parse(startDateStr);
@@ -418,6 +442,8 @@ public class testCalendarView extends Application {
                     LocalTime endTime=LocalTime.parse(endTimeStr);
                     //set date
                     Entry<?> entry = new Entry<>(title);
+                    entry.setTitle(title);
+                    entry.setId(id);
                     entry.setLocation(location);
                     entry.changeStartDate(startDate);
                     entry.changeEndDate(endDate);
@@ -479,7 +505,7 @@ public class testCalendarView extends Application {
 
     
     public static void main(String[] args) {
-        calendarSource=loadCalendarSource(SaveFileName);
+    	/*calendarSource=loadCalendarSource(SaveFileName);
         if(calendarSource==null) {
             System.out.print("no Calendar Source data");
             Calendar test=new Calendar("test");
@@ -488,7 +514,23 @@ public class testCalendarView extends Application {
             saveCalendarSource(calendarSource,SaveFileName);
         }
         calendarView=createCalendarView(calendarSource);
-
+		*/
+    	calendarView=loadCalendarView(SaveFileName);
+    	if(calendarView==null) {
+    		System.out.println("No Calendar View Data Found:");
+    		Calendar test=new Calendar("test");
+    		System.out.println("Creating New Calendar:");
+            calendarSource= new CalendarSource();
+    		System.out.println("Creating New Calendar Source:");
+            calendarSource.getCalendars().add(test);
+    		System.out.println("Assigning Calendar into Source:");
+            calendarView.getCalendarSources().setAll(calendarSource);
+    		System.out.println("Assigning Source into View:");
+    		System.out.println("New Calendar View Class Created:");
+    		saveCalendarView(calendarView,SaveFileName);
+    	}
+    	
+    	
 
         launch(args);
     }
