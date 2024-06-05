@@ -1,0 +1,26 @@
+Calendar:Existing
+  Entry:
+    Title:Alert Notification
+    ID:20417314-2c44-46c8-a40b-80a2eb65665e
+    Location:Windows
+    StartDate:2024-06-05
+    EndDate:2024-06-05
+    StartTime:12:00
+    EndTime:13:00
+  Entry:
+    Title:Event 1
+    ID:36586d05-5b98-49dc-8451-d59f1949cb7b
+    Location:EWU
+    StartDate:2024-06-04
+    EndDate:2024-06-04
+    StartTime:12:01
+    EndTime:13:00
+  Entry:
+    Title:Entry 2
+    ID:bde51fbd-9dab-459c-8db5-f89d74acdf19
+    Location:Catalyst
+    StartDate:2024-06-03
+    EndDate:2024-06-03
+    StartTime:12:00
+    EndTime:13:00
+Calendar:test
