@@ -287,7 +287,7 @@ public class testCalendarView extends Application {
             e.printStackTrace();
             return null;
         }
-        CalendarView calendarView = new CalendarView();
+        //CalendarView calendarView = new CalendarView();
         calendarView.getCalendarSources().add(calendarSource);
         return calendarView;
     }
