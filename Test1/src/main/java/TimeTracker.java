@@ -34,7 +34,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
-public class testCalendarView extends Application {
+public class TimeTracker extends Application {
     //Start of GlobalVariables//
     public static final String SaveFileName="calendarSourceData.txt";
     public static CalendarView calendarView;
