@@ -72,6 +72,58 @@
 
     <build>
         <plugins>
+			<!-- Maven Assembly Plugin -->
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-assembly-plugin</artifactId>
+	            <version>3.3.0</version>
+	            <configuration>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <archive>
+	                    <manifest>
+	                        <mainClass>com.yourcompany.YourMainClass</mainClass>
+	                    </manifest>
+	                </archive>
+	            </configuration>
+	            <executions>
+	                <execution>
+	                    <id>make-assembly</id>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>single</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+	        <!-- Launch4j Maven Plugin -->
+	        <plugin>
+	            <groupId>net.sf.launch4j</groupId>
+	            <artifactId>launch4j-maven-plugin</artifactId>
+	            <version>1.7.25</version>
+	            <executions>
+	                <execution>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>launch4j</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	            <configuration>
+	                <outfile>target/YourApp.exe</outfile>
+	                <jar>target/your-artifact-id-jar-with-dependencies.jar</jar>
+	                <dontWrapJar>false</dontWrapJar>
+	                <headerType>console</headerType>
+	                <jarOpts>
+	                    <opt>-Xmx1024m</opt>
+	                </jarOpts>
+	                <jre>
+	                    <minVersion>1.8.0</minVersion>
+	                </jre>
+	            </configuration>
+	        </plugin>
+	        <!-- JavaFX-Maven plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
