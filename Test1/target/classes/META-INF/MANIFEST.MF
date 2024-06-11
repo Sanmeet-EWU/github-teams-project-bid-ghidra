@@ -3,9 +3,9 @@ Build-Jdk-Spec: 17
 Implementation-Title: CalendarFXApp
 Implementation-Version: 11.12.7
 Implementation-Vendor: Dirk Lemmermann Software & Consulting
-Build-Jdk: 11 (Eclipse Adoptium 17.0.11+9)
+Build-Jdk: 11 (Oracle Corporation 17.0.6+9-LTS-190)
 Build-OS: Windows 11 amd64 10.0
-Build-Revision: 
-Build-Timestamp: 
+Build-Revision: 333414ad13afc7fb8e81ef02b942c1658484b6d4
+Build-Timestamp: 2024-06-11T15:15:35-07:00
 Created-By: Maven Integration for Eclipse
 

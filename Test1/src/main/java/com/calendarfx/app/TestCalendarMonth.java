@@ -26,6 +26,7 @@ public class TestCalendarMonth extends Application {
         //fits the calendar to the screen size
         primaryStage.sizeToScene();
         primaryStage.centerOnScreen();
+        
         //primaryStage.
         //displays the window
         primaryStage.show();
