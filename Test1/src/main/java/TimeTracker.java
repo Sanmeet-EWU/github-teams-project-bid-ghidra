@@ -39,6 +39,7 @@ public class TimeTracker extends Application {
 	public static CalendarSource calendarSource;
 	// End of GlobalVariables//
 
+	@Override
 	public void start(Stage primaryStage) {
 
 		// save the calendar details every 10 seconds
@@ -57,8 +58,10 @@ public class TimeTracker extends Application {
 				FileChooser fileChooser = new FileChooser();
 				File file = fileChooser.showSaveDialog(primaryStage);
 				if (file != null)
+				 {
 					saveFile(calendarView, file);
 				// saveCalendarView(calendarView,SaveFileName);
+				}
 			}
 		});
 		loadButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -115,8 +118,9 @@ public class TimeTracker extends Application {
 		List<Entry<?>> entries = getEntries(calendarView);
 		for (Entry entry : entries) {
 			LocalDate entryDate = entry.getStartDate();
-			if (LocalDate.now().isEqual(entryDate))
+			if (LocalDate.now().isEqual(entryDate)) {
 				openAlertWindow(entry);
+			}
 		}
 	}
 

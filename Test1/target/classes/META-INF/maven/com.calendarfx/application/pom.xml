@@ -18,7 +18,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>application</artifactId>
-    <name>CalendarFXApp</name>
+    <name>TimeTracker</name>
 
     <parent>
         <groupId>com.calendarfx</groupId>
@@ -36,6 +36,11 @@
 
     <dependencies>
 		<!-- JavaFX dependencies -->
+		<dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-base</artifactId>
+	        <version>17.0.2</version>
+    	</dependency>
 		<dependency>
 	        <groupId>org.openjfx</groupId>
 	        <artifactId>javafx-controls</artifactId>
@@ -83,7 +88,7 @@
 	                </descriptorRefs>
 	                <archive>
 	                    <manifest>
-	                        <mainClass>com.yourcompany.YourMainClass</mainClass>
+	                        <mainClass>TimeTracker.java</mainClass>
 	                    </manifest>
 	                </archive>
 	            </configuration>
@@ -99,9 +104,9 @@
 	        </plugin>
 	        <!-- Launch4j Maven Plugin -->
 	        <plugin>
-	            <groupId>net.sf.launch4j</groupId>
+	            <groupId>com.akathist.maven.plugins.launch4j</groupId>
 	            <artifactId>launch4j-maven-plugin</artifactId>
-	            <version>1.7.25</version>
+	            <version>2.5.1</version>
 	            <executions>
 	                <execution>
 	                    <phase>package</phase>
@@ -111,19 +116,16 @@
 	                </execution>
 	            </executions>
 	            <configuration>
-	                <outfile>target/YourApp.exe</outfile>
-	                <jar>target/your-artifact-id-jar-with-dependencies.jar</jar>
+	                <outfile>target/TimeTracker.exe</outfile>
+	                <jar>target/application-jar-with-dependencies.jar</jar>
 	                <dontWrapJar>false</dontWrapJar>
 	                <headerType>console</headerType>
-	                <jarOpts>
-	                    <opt>-Xmx1024m</opt>
-	                </jarOpts>
 	                <jre>
 	                    <minVersion>1.8.0</minVersion>
 	                </jre>
 	            </configuration>
 	        </plugin>
-	        <!-- JavaFX-Maven plugin -->
+	        <!-- JavaFX-Maven plugin 
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -132,7 +134,7 @@
                     <mainClass>com.calendarfx.app.CalendarApp</mainClass>
                 </configuration>
             </plugin>
-            <!-- Adding directory-maven-plugin if needed -->
+             Adding directory-maven-plugin if needed
             <plugin>
                 <groupId>org.commonjava.maven.plugins</groupId>
                 <artifactId>directory-maven-plugin</artifactId>
@@ -146,6 +148,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
