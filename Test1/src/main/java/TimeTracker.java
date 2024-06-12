@@ -57,10 +57,9 @@ public class TimeTracker extends Application {
 			public void handle(ActionEvent eventt) {
 				FileChooser fileChooser = new FileChooser();
 				File file = fileChooser.showSaveDialog(primaryStage);
-				if (file != null)
-				 {
+				if (file != null) {
 					saveFile(calendarView, file);
-				// saveCalendarView(calendarView,SaveFileName);
+					// saveCalendarView(calendarView,SaveFileName);
 				}
 			}
 		});

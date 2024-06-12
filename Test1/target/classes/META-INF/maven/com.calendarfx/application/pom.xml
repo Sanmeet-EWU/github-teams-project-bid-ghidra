@@ -27,29 +27,75 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <properties>
+	<properties>
+	    <javafx.platform>win</javafx.platform>
+	</properties>
+	
+	<profiles>
+	    <profile>
+	        <id>windows-profile</id>
+	        <activation>
+	            <os>
+	                <name>Windows</name> <!-- or use 'Windows 11' or just 'Windows' -->
+	            </os>
+	        </activation>
+	        <properties>
+	            <javafx.platform>win</javafx.platform>
+	        </properties>
+	    </profile>
+	</profiles>
+
+    <!--properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <slf4j.version>2.0.7</slf4j.version>
         <logback.version>1.4.7</logback.version>
-    </properties>
+        <javafx.platform>win</javafx.platform>
+    </properties-->
 
     <dependencies>
 		<!-- JavaFX dependencies -->
 		<dependency>
 	        <groupId>org.openjfx</groupId>
 	        <artifactId>javafx-base</artifactId>
-	        <version>17.0.2</version>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
     	</dependency>
 		<dependency>
 	        <groupId>org.openjfx</groupId>
 	        <artifactId>javafx-controls</artifactId>
-	        <version>17.0.2</version>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
 	    </dependency>
 	    <dependency>
 	        <groupId>org.openjfx</groupId>
 	        <artifactId>javafx-fxml</artifactId>
-	        <version>17.0.2</version>
+	        <classifier>${javafx.platform}</classifier>
+		    <version>19</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-graphics</artifactId>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-media</artifactId>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-swing</artifactId>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-web</artifactId>
+	        <classifier>${javafx.platform}</classifier>
+	        <version>19</version>
 	    </dependency>
         <dependency>
             <groupId>com.calendarfx</groupId>
