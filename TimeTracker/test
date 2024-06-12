@@ -1,0 +1,17 @@
+Calendar:test
+  Entry:
+    Title:TEST 2
+    ID:1c106132-85da-4585-a389-dde89904fe66
+    Location:Waterloo
+    StartDate:2024-06-05
+    EndDate:2024-06-07
+    StartTime:12:00
+    EndTime:13:00
+  Entry:
+    Title:TEST1
+    ID:c8fe8cc8-696e-4139-a47a-73e26a987a8d
+    Location:EWU
+    StartDate:2024-06-03
+    EndDate:2024-06-03
+    StartTime:12:00
+    EndTime:13:00
