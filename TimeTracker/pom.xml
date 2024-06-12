@@ -15,187 +15,85 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>application</artifactId>
-    <name>TimeTracker</name>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>application</artifactId>
+	<name>TimeTracker</name>
 
-    <parent>
-        <groupId>com.calendarfx</groupId>
-        <artifactId>calendar</artifactId>
-        <version>11.12.7</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.calendarfx</groupId>
+		<artifactId>calendar</artifactId>
+		<version>11.12.7</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<properties>
-	    <javafx.platform>win</javafx.platform>
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
+		<slf4j.version>2.0.7</slf4j.version>
+		<logback.version>1.4.7</logback.version>
 	</properties>
-	
-	<profiles>
-	    <profile>
-	        <id>windows-profile</id>
-	        <activation>
-	            <os>
-	                <name>Windows</name> <!-- or use 'Windows 11' or just 'Windows' -->
-	            </os>
-	        </activation>
-	        <properties>
-	            <javafx.platform>win</javafx.platform>
-	        </properties>
-	    </profile>
-	</profiles>
 
-    <!--properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <slf4j.version>2.0.7</slf4j.version>
-        <logback.version>1.4.7</logback.version>
-        <javafx.platform>win</javafx.platform>
-    </properties-->
-
-    <dependencies>
-		<!-- JavaFX dependencies -->
+	<dependencies>
 		<dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-base</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-    	</dependency>
+			<groupId>com.calendarfx</groupId>
+			<artifactId>view</artifactId>
+			<version>11.12.7</version>
+		</dependency>
 		<dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-controls</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-fxml</artifactId>
-	        <classifier>win</classifier>
-		    <version>19</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-graphics</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-media</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-swing</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-web</artifactId>
-	        <classifier>win</classifier>
-	        <version>19</version>
-	    </dependency>
-        <dependency>
-            <groupId>com.calendarfx</groupId>
-            <artifactId>view</artifactId>
-            <version>11.12.7</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.brouillard.oss</groupId>
-            <artifactId>cssfx</artifactId>
-            <version>11.5.1</version>
-        </dependency>
-        <!-- SLF4J API -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
-        </dependency>
-        <!-- Logback Classic Module -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.7</version>
-        </dependency>
-    </dependencies>
+			<groupId>fr.brouillard.oss</groupId>
+			<artifactId>cssfx</artifactId>
+			<version>11.5.0</version>
+		</dependency>
+		<!-- SLF4J API -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- Logback Classic Module -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.brouillard.oss</groupId>
+			<artifactId>cssfx</artifactId>
+			<version>11.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.calendarfx</groupId>
+			<artifactId>application</artifactId>
+			<version>11.12.7</version>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-			<!-- Maven Assembly Plugin -->
-	        <plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-assembly-plugin</artifactId>
-	            <version>3.3.0</version>
-	            <configuration>
-	                <descriptorRefs>
-	                    <descriptorRef>jar-with-dependencies</descriptorRef>
-	                </descriptorRefs>
-	                <archive>
-	                    <manifest>
-	                        <mainClass>com.ghidra.TimeTracker.java</mainClass>
-	                    </manifest>
-	                </archive>
-	            </configuration>
-	            <executions>
-	                <execution>
-	                    <id>make-assembly</id>
-	                    <phase>package</phase>
-	                    <goals>
-	                        <goal>single</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
-	        </plugin>
-	        <!-- Launch4j Maven Plugin -->
-	        <plugin>
-	            <groupId>com.akathist.maven.plugins.launch4j</groupId>
-	            <artifactId>launch4j-maven-plugin</artifactId>
-	            <version>2.5.1</version>
-	            <executions>
-	                <execution>
-	                    <phase>package</phase>
-	                    <goals>
-	                        <goal>launch4j</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
-	            <configuration>
-	                <outfile>out/TimeTracker.exe</outfile>
-	                <jar>application-jar-with-dependencies.jar</jar>
-	                <dontWrapJar>false</dontWrapJar>
-	                <headerType>console</headerType>
-	                <jre>
-	                    <minVersion>1.8.0</minVersion>
-	                </jre>
-	            </configuration>
-	        </plugin>
-	        <!-- JavaFX-Maven plugin 
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>com.calendarfx.app.CalendarApp</mainClass>
-                </configuration>
-            </plugin>
-             Adding directory-maven-plugin if needed
-            <plugin>
-                <groupId>org.commonjava.maven.plugins</groupId>
-                <artifactId>directory-maven-plugin</artifactId>
-                <version>0.3.1</version>
-                <executions>
-                    <execution>
-                        <id>resolve-rootdir</id>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>${javafx.maven.plugin.version}</version>
+				<configuration>
+					<mainClass>com.ghidra.TimeTracker</mainClass>
+				</configuration>
+			</plugin>
+			<!-- Adding directory-maven-plugin if needed -->
+			<plugin>
+				<groupId>org.commonjava.maven.plugins</groupId>
+				<artifactId>directory-maven-plugin</artifactId>
+				<version>0.3.1</version>
+				<executions>
+					<execution>
+						<id>resolve-rootdir</id>
+						<goals>
+							<goal>highest-basedir</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
