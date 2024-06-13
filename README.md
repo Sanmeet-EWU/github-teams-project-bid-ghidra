@@ -54,6 +54,22 @@ To obtain the source code, follow these steps:
     ```bash
    src/main/java/com/calendarfx/app
 
+## Future Enhancements
+
+### 1. Enhanced Alert System
+- Implement alert notifications using native device notification systems.
+- Introduce sound playback for notifications.
+- Add snooze and dismiss functionality for alerts.
+
+### 2. Expanded Personalization Options
+- Enable customization of calendar background colors.
+- Provide options to change font styles and sizes.
+- Allow users to select event colors and adjust transparency levels.
+
+### 3. Improved Security Measures
+- Implement encryption for saved file data to enhance security.
+
+
 # References
 - https://dlsc-software-consulting-gmbh.github.io/CalendarFX/
 - https://docs.oracle.com/javase/8/javafx/api/
