@@ -52,7 +52,7 @@ To obtain the source code, follow these steps:
    git clone https://github.com/Sanmeet-EWU/github-teams-project-bid-ghidra.git
 2. Navigate to the java file:
     ```bash
-   src/main/java/com/calendarfx/app
+   src/main/java/com/ghidra/TimeTracker/TimeTracker.java
 
 ## Future Enhancements
 
@@ -65,10 +65,18 @@ To obtain the source code, follow these steps:
 - Enable customization of calendar background colors.
 - Provide options to change font styles and sizes.
 - Allow users to select event colors and adjust transparency levels.
+- Allow users to create custom fields in the event details
 
 ### 3. Improved Security Measures
 - Implement encryption for saved file data to enhance security.
 
+### 4. Database System and User Authentication
+- Implement a database system that can handle the data of many users
+- Implement a user authentication system so that different users can access their data
+
+### 5. Installation process and Executible
+- Build the project so that it can be shipped as an executible
+- Implement an installation process to install the executible to the machine and make a shortcut to it
 
 # References
 - https://dlsc-software-consulting-gmbh.github.io/CalendarFX/
