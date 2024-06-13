@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 17
+Implementation-Title: TimeTracker
+Implementation-Version: 11.12.7
+Implementation-Vendor: Dirk Lemmermann Software & Consulting
+Build-Jdk: 11 (Eclipse Adoptium 17.0.5+8)
+Build-OS: Windows 11 amd64 10.0
+Build-Revision: b3b33ab95dd81f8fca4c011b5f15b9429de1a160
+Build-Timestamp: 2024-06-11T21:11:27-07:00
+Created-By: Maven Integration for Eclipse
+
