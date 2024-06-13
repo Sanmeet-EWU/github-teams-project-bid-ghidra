@@ -50,10 +50,15 @@ To obtain the source code, follow these steps:
 1. Clone the main repository:
    ```bash
    git clone https://github.com/Sanmeet-EWU/github-teams-project-bid-ghidra.git
+   ```
 2. Navigate to the java file:
-    ```bash
-   src/main/java/com/ghidra/TimeTracker/TimeTracker.java
-
+   ```bash
+   ./TimeTracker/src/main/java/com/ghidra/TimeTracker.java
+   ```
+For detailed instructions on setting up a project in Eclipse or IntelliJ, see the User Manual:
+   ```bash
+   ./UserManual/TimeTrackerUserManual.pdf
+   ```
 ## Future Enhancements
 
 ### 1. Enhanced Alert System
