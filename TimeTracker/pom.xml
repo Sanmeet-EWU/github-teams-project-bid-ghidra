@@ -31,7 +31,7 @@
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-		<slf4j.version>2.0.7</slf4j.version>
+		<slf4j.version>2.0.9</slf4j.version>
 		<logback.version>1.4.7</logback.version>
 	</properties>
 
@@ -58,16 +58,7 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.brouillard.oss</groupId>
-			<artifactId>cssfx</artifactId>
-			<version>11.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.calendarfx</groupId>
-			<artifactId>application</artifactId>
-			<version>11.12.7</version>
-		</dependency>
+		
 	</dependencies>
 
 	<build>
